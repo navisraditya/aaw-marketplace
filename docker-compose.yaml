@@ -1,31 +1,105 @@
-version: '3.8'
+# version: '3.8'
+
+# services:
+#   marketplace:
+#     build: .
+#     ports:
+#       - "8000:8000"
+#     environment:
+#       - TENANT_ID=47dd6b24-0b23-46b0-a662-776158d089ba
+#       - JWT_SECRET=auth_ms_jwt_secret
+#       - DB_HOST=db
+#       - DB_PORT=5432
+#       - DB_USER=postgres
+#       - DB_PASSWORD=postgres
+#       - DB_NAME=marketplace
+#     depends_on:
+#       - db
+
+#   db:
+#     image: postgres:latest
+#     environment:
+#       POSTGRES_DB: marketplace
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: postgres
+#     ports:
+#       - "5432:5432"
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+
+# volumes:
+#   postgres_data:
+
+version: "3.8"
 
 services:
-  marketplace:
-    build: .
-    ports:
-      - "8000:8000"
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
     environment:
-      - TENANT_ID=47dd6b24-0b23-46b0-a662-776158d089ba
-      - JWT_SECRET=auth_ms_jwt_secret
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_NAME=marketplace
-    depends_on:
-      - db
-
-  db:
-    image: postgres:latest
-    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
       POSTGRES_DB: marketplace
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  authentication:
+    build: ./authentication
+    container_name: authentication_service
+    restart: always
+    env_file:
+      - ./authentication/.env
+    depends_on:
+      - postgres
+    ports:
+      - "3001:3000"
+
+  wishlist:
+    build: ./wishlist
+    container_name: wishlist_service
+    restart: always
+    env_file:
+      - ./wishlist/.env
+    depends_on:
+      - postgres
+    ports:
+      - "3002:3000"
+
+  orders:
+    build: ./orders
+    container_name: orders_service
+    restart: always
+    env_file:
+      - ./orders/.env
+    depends_on:
+      - postgres
+    ports:
+      - "3003:3000"
+
+  products:
+    build: ./products
+    container_name: products_service
+    restart: always
+    env_file:
+      - ./products/.env
+    depends_on:
+      - postgres
+    ports:
+      - "3004:3000"
+
+  tenant:
+    build: ./tenant
+    container_name: tenant_service
+    restart: always
+    env_file:
+      - ./tenant/.env
+    depends_on:
+      - postgres
+    ports:
+      - "3005:3000"
 
 volumes:
   postgres_data:
