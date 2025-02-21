@@ -1,4 +1,4 @@
-import { BadRequestResponse, InternalServerErrorResponse, NotFoundResponse } from "@src/shared/commons/patterns";
+import { BadRequestResponse, InternalServerErrorResponse, NotFoundResponse } from "../../commons/patterns";
 import { NewPayment } from "../../../db/schema/payment";
 import { payOrder } from "../dao/payOrder.dao";
 

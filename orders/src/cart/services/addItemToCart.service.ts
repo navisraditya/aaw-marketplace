@@ -1,5 +1,5 @@
 import { NewCart } from "../../../db/schema/cart";
-import { InternalServerErrorResponse, NotFoundResponse } from "@src/shared/commons/patterns";
+import { InternalServerErrorResponse, NotFoundResponse } from "../../commons/patterns";
 import { addItemToCart } from "../dao/addItemToCart.dao";
 import { User } from "@src/shared/types";
 

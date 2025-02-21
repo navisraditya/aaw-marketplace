@@ -1,4 +1,4 @@
-import { InternalServerErrorResponse, NotFoundResponse, UnauthorizedResponse } from "@src/shared/commons/patterns";
+import { InternalServerErrorResponse, NotFoundResponse, UnauthorizedResponse } from "../../commons/patterns";
 import { getOrderById } from "../dao/getOrderById.dao";
 import { getOrderDetail } from "../dao/getOrderDetail.dao";
 import { User } from "@src/shared/types";

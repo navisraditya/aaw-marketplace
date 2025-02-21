@@ -1,5 +1,6 @@
 import express from 'express';
-import { validate, verifyJWT } from "../middleware";
+import { verifyJWT } from '../middleware/verifyJWT';
+import { validate } from '../middleware';
 import * as Validation from './validation';
 import * as Handler from './cart.handler';
 

@@ -1,5 +1,5 @@
 import { getAllCartItems } from "../../cart/dao/getAllCartItems.dao";
-import { BadRequestResponse, InternalServerErrorResponse, NotFoundResponse } from "@src/shared/commons/patterns";
+import { BadRequestResponse, InternalServerErrorResponse, NotFoundResponse } from "../../commons/patterns";
 import { createOrder } from "../dao/createOrder.dao";
 import axios, { AxiosResponse } from "axios";
 import { User, Product } from "@src/shared/types";

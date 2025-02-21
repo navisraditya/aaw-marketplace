@@ -1,4 +1,4 @@
-import { InternalServerErrorResponse, NotFoundResponse } from "@src/shared/commons/patterns";
+import { InternalServerErrorResponse, NotFoundResponse } from "../../commons/patterns";
 import { User } from "@src/shared/types";
 import { deleteCartItemByProductId } from "../dao/deleteCartItemByProductId.dao";
 
