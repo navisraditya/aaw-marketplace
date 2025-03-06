@@ -1,5 +1,5 @@
 import express from 'express';
-import { validate, verifyJWTProduct } from "../../orders/src/middleware";
+import { validate, verifyJWTProduct } from "../middleware";
 import * as Validation from './validation';
 import * as Handler from './product.handler';
 

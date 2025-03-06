@@ -1,7 +1,7 @@
-import { InternalServerErrorResponse, NotFoundResponse, UnauthorizedResponse } from "@src/shared/commons/patterns";
+import { InternalServerErrorResponse, NotFoundResponse, UnauthorizedResponse } from "../../../src/commons/patterns";
 import { getWishlistDetailByWishlistId } from "../dao/getWishlistDetailByWishlistId.dao";
 import { getWishlistById } from "../dao/getWishlistById.dao";
-import { User } from "@src/shared/types";
+import { User } from "../../../type/user";
 
 export const getWishlistByIdService = async (
     wishlist_id: string,

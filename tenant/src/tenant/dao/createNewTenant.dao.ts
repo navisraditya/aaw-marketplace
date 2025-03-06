@@ -1,6 +1,6 @@
-import * as schemaTenant from '@db/schema/tenant/tenants'
-import * as schemaTenantDetails from '@db/schema/tenant/tenantDetails'
-import { db } from "../../../authentication/src/db"
+import * as schemaTenant from '../../../db/schema/tenants';
+import * as schemaTenantDetails from '../../../db/schema/tenantDetails';
+import { db } from "../../db";
 
 export const createNewTenant = async (
     owner_id: string,

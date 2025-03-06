@@ -1,34 +1,43 @@
+# Stage 1: Fetching the node image and building the application
 FROM node:18.18.2 AS builder
 
-WORKDIR /marketplace
+# Setting up the work directory
+WORKDIR /service-auth
 
+# Copying package.json separately
 COPY package.json ./
 
 # Install pnpm
 RUN npm install -g pnpm typescript
 
-# Install dependencies
+# Installing dependencies
 RUN pnpm install
 
-# Copy source
+# Copying the rest of the application
 COPY . .
 
-# Build
+# Building our application
 RUN pnpm run build
 
-# Production image
+# Stage 2: Creating a lightweight image for production
 FROM node:18.18.2-slim
 
+# Declaring env
 ENV PORT 8000
 ENV NODE_ENV production
 
-WORKDIR /marketplace
+# Set working directory
+WORKDIR /service-auth
 
-COPY --from=builder dist ./dist
-COPY --from=builder package.json ./package.json
+# Copy built files from the previous stage
+COPY --from=builder /service-auth/dist ./dist
+COPY --from=builder /service-auth/package.json ./package.json
 
+# Install production dependencies only
 RUN npm install --only=production
 
+# Expose server port
 EXPOSE 8000
 
-CMD ["node", "dist/server.js"]
+# Start the application
+CMD ["node", "dist/src/server.js"]

@@ -1,6 +1,6 @@
-import { NewProduct } from "../../../products/db/products";
-import { db } from "../../../authentication/src/db";
-import * as schema from '../../../products/db/products'
+import { NewProduct } from "../../../db/schema/products";
+import { db } from "../../db";
+import * as schema from '../../../db/schema/products';
 
 export const createNewProduct = async (data: NewProduct) => {
     const result = await db

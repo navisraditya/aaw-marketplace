@@ -1,13 +1,5 @@
 {
   "dependencies": {
-    "@pgtyped/query": "^2.4.2",
-    "dotenv": "^16.4.7",
-    "drizzle-orm": "^0.39.3",
-    "package.json": "^0.0.0",
-    "pg": "^8.13.3",
-    "postgresql": "^0.0.1"
-  },
-  "devDependencies": {
-    "@types/pg": "^8.11.11"
+    "jsonwebtoken": "^9.0.2"
   }
 }

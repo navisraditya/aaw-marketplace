@@ -1,4 +1,4 @@
-import * as schema from '@db/schema/auth/users'
+import * as schema from '../../../db/schema/users';
 import { db } from "../../db";
 import { eq, and } from "drizzle-orm";
 

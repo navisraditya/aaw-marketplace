@@ -1,4 +1,4 @@
-import { InternalServerErrorResponse, NotFoundResponse } from "@src/shared/commons/patterns"
+import { InternalServerErrorResponse, NotFoundResponse } from "../../commons/patterns";
 import { getTenantById } from "../dao/getTenantById.dao";
 
 export const getTenantService = async (

@@ -1,4 +1,4 @@
-import { InternalServerErrorResponse } from "@src/shared/commons/patterns";
+import { InternalServerErrorResponse } from "../../../src/commons/patterns";
 import { deleteWishlistById } from "../dao/deleteWishlistById.dao";
 
 export const deleteWishlistService = async(

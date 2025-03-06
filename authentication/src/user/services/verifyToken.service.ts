@@ -1,4 +1,4 @@
-import { InternalServerErrorResponse, UnauthorizedResponse } from "@src/shared/commons/patterns";
+import { InternalServerErrorResponse, UnauthorizedResponse } from "../../commons/patterns";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { getUserById } from "../dao/getUserById.dao";
 

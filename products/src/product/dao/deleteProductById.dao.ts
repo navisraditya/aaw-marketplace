@@ -1,6 +1,6 @@
-import { db } from "../../../authentication/src/db";
+import { db } from "../../db";
 import { eq, and } from "drizzle-orm";
-import * as schema from '../../../products/db/products'
+import * as schema from '../../../db/schema/products';
 
 export const deleteProductById = async (tenant_id: string, id: string) => {
     const result = await db

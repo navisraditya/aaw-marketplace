@@ -1,6 +1,6 @@
-import { NewCategory } from "../../../products/db/categories";
-import { db } from "../../../authentication/src/db";
-import * as schema from '../../../products/db/categories'
+import { NewCategory } from "../../../db/schema/categories";
+import { db } from "../../db";
+import * as schema from '../../../db/schema/categories';
 
 export const createNewCategory = async (data: NewCategory) => {
     const result = await db

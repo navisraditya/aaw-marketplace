@@ -1,5 +1,5 @@
-import { db } from "../../../authentication/src/db";
-import * as schema from '../../../products/db/categories'
+import { db } from "../../db";
+import * as schema from '../../../db/schema/categories';
 import { and, eq } from "drizzle-orm";
 
 export const editCategoryById = async (

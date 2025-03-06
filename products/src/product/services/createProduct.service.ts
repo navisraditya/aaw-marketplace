@@ -1,5 +1,5 @@
-import { NewProduct } from "../../../products/db/products";
-import { InternalServerErrorResponse } from "@src/shared/commons/patterns";
+import { NewProduct } from "../../../db/schema/products";
+import { InternalServerErrorResponse } from "../../commons/patterns/";
 import { createNewProduct } from "../dao/createNewProduct.dao";
 
 export const createProductService = async (

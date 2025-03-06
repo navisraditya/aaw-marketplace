@@ -1,4 +1,4 @@
-import { InternalServerErrorResponse } from "@src/shared/commons/patterns";
+import { InternalServerErrorResponse } from "../../commons/patterns/";
 import { editProductById } from "../dao/editProductById.dao";
 
 export const editProductService = async (

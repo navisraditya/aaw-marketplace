@@ -1,6 +1,6 @@
-import { db } from "../../../authentication/src/db";
-import * as schema from '@db/schema/wishlist/wishlist';
-import { NewWishlist } from "@db/schema/wishlist/wishlist";
+import { db } from "../../db";
+import * as schema from '../../../db/schema/wishlist';
+import { NewWishlist } from "../../../db/schema/wishlist";
 
 export const createWishlist = async (data: NewWishlist) => {
     const result = await db

@@ -1,7 +1,7 @@
-import bcrypt from 'bcrypt'
-import { NewUser } from '@db/schema/auth/users';
+import bcrypt from 'bcrypt';
+import { NewUser } from '../../../db/schema/users';
 import { insertNewUser } from '../dao/insertNewUser.dao';
-import { InternalServerErrorResponse } from '@src/shared/commons/patterns';
+import { InternalServerErrorResponse } from '../../commons/patterns/exceptions';
 
 export const registerService = async (
     username: string,

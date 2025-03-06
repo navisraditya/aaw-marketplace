@@ -1,6 +1,6 @@
-import { db } from "../../../authentication/src/db";
+import { db } from "../../db";
 import { eq, and } from "drizzle-orm";
-import * as schema from '@db/schema/wishlist/wishlist';
+import * as schema from '../../../db/schema/wishlist';
 
 export const getAllUserWishlist = async (
     tenant_id: string,

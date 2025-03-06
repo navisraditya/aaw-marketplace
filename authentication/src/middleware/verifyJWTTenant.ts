@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { UnauthenticatedResponse } from "../../../src/shared/commons/patterns/exceptions";
-import { verifyAdminTokenService } from "@src/auth/services";
-import { getTenantService } from "@src/tenant/services";
+import { UnauthenticatedResponse } from "../../src/commons/patterns/exceptions";
+import { verifyAdminTokenService } from "../user/services/verifyAdminToken.service";
+import { getTenantService } from "../../../tenant/src/tenant/services/getTenant.service";
 
 interface JWTUser extends JwtPayload {
   id: string;

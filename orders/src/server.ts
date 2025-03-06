@@ -4,12 +4,12 @@ dotenv.config();
 import express, { Express, NextFunction, Request, Response } from "express";
 import cors from "cors";
 
-import authRoutes from "./auth/user.routes"
-import orderRoutes from "../orders/src/order/order.routes";
-import cartRoutes from "../orders/src/cart/cart.routes";
-import productRoutes from './product/product.routes'
-import tenantRoutes from './tenant/tenant.routes';
-import wishlistRoutes from "./wishlist/wishlist.routes";
+import authRoutes from "../../authentication/src/user/user.routes";
+import orderRoutes from "../../orders/src/order/order.routes";
+import cartRoutes from "../../orders/src/cart/cart.routes";
+import productRoutes from '../../products/src/product/product.routes';
+import tenantRoutes from '../../tenant/src/tenant/tenant.routes';
+import wishlistRoutes from "../../wishlist/src/wishlist/wishlist.routes";
 
 import express_prom_bundle from "express-prom-bundle";
 

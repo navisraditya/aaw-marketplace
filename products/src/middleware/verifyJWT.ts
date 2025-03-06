@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { UnauthenticatedResponse } from "../../../src/shared/commons/patterns/exceptions";
+import { UnauthenticatedResponse } from "../commons/patterns/exceptions";
 
 interface JWTUser extends JwtPayload {
     id: string;

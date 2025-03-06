@@ -1,5 +1,5 @@
-import { db } from "../../../authentication/src/db";
-import * as schema from '../../../products/db/products'
+import { db } from "../../db";
+import * as schema from '../../../db/schema/products';
 import { and, eq, inArray } from "drizzle-orm";
 
 export const getManyProductDatasById = async (

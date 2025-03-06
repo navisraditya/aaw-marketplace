@@ -1,4 +1,4 @@
-import { db } from "../../../../authentication/src/db";
+import { db } from "../../../src/db";
 import { NewCart } from "../../../db/schema/cart";
 import * as schema from '../../../db/schema/cart';
 

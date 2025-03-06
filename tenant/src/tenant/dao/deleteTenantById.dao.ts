@@ -1,7 +1,7 @@
-import * as schemaTenant from '@db/schema/tenant/tenants'
-import * as schemaTenantDetails from '@db/schema/tenant/tenantDetails'
-import { db } from "../../../authentication/src/db"
-import { eq } from "drizzle-orm"
+import * as schemaTenant from '../../../db/schema/tenants';
+import * as schemaTenantDetails from '../../../db/schema/tenantDetails';
+import { db } from "../../db";
+import { eq } from "drizzle-orm";
 
 export const deleteTenantById = async (tenant_id: string) => {
     const result = await db.transaction(async (tx) => {

@@ -1,4 +1,4 @@
-import { InternalServerErrorResponse } from "@src/shared/commons/patterns"
+import { InternalServerErrorResponse } from "../../commons/patterns/";
 import { getProductById } from "../dao/getProductById.dao";
 
 export const getProductByIdService = async (

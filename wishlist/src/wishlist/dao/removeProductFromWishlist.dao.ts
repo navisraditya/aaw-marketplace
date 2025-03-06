@@ -1,6 +1,7 @@
-import { db } from "../../../authentication/src/db";
+import { db } from "../../db";
 import { eq, and } from "drizzle-orm";
-import * as schema from '@db/schema/wishlist/wishlistDetail';
+import * as schema from '../../../db/schema/wishlistDetail';
+
 
 export const removeProductFromWishlist = async (
     id: string,
