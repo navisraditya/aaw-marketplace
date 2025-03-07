@@ -1,4 +1,4 @@
-import { db } from "../../../../authentication/src/db";
+import { db } from "../../db/";
 import { NewPayment } from "../../../db/schema/payment";
 import * as schemaPayment from '../../../db/schema/payment';
 import * as schemaOrder from "../../../db/schema/order";

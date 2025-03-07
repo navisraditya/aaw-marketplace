@@ -1,12 +1,12 @@
 import { Order, NewOrder } from "../../../db/schema/order";
 import { NewOrderDetail, OrderDetail } from "../../../db/schema/orderDetail";
-import { db } from "../../../../authentication/src/db";
+import { db } from "../../db/";
 import * as schemaCart from "../../../db/schema/cart";
 import * as schemaOrder from "../../../db/schema/order";
 import * as schemaOrderDetail from "../../../db/schema/orderDetail";
 import { Cart } from "../../../db/schema/cart";
 import { and, eq } from "drizzle-orm";
-import { Product } from "../../../../orders/type/product";
+import { Product } from "../../../type/product";
 
 export const createOrder = async (
     tenant_id: string,

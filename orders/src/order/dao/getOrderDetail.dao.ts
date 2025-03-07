@@ -1,4 +1,4 @@
-import { db } from "../../../../authentication/src/db";
+import { db } from "../../db/";
 import { and, eq } from "drizzle-orm";
 import * as schema from "../../../db/schema/orderDetail";
 
