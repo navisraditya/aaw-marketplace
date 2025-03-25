@@ -24,15 +24,15 @@ services:
     ports:
       - "5432:5432"
 
-  prometheus:
-    image: prom/prometheus
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
+  # prometheus:
+  #   image: prom/prometheus
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  #   ports:
+  #     - "9090:9090"
 
-  k6:
-    image: grafana/k6
-    command: run /scripts/test.js
-    volumes:
-      - ./k6:/scripts
+  # k6:
+  #   image: grafana/k6
+  #   command: run /scripts/test.js
+  #   volumes:
+  #     - ./k6:/scripts
