@@ -1,8 +1,9 @@
-import { InternalServerErrorResponse } from "../../commons/patterns/";
-import { getProductByCategory } from "../dao/getProductByCategory.dao";
+import { InternalServerErrorResponse } from "../../../commons/patterns";
+import { editCategoryById } from "../dao/editCategoryById.dao";
 
-export const getProductByCategoryService = async (
+export const editCategoryService = async (
     category_id: string,
+    name?: string,
 ) => {
     try {
         const SERVER_TENANT_ID = process.env.TENANT_ID;
@@ -10,15 +11,15 @@ export const getProductByCategoryService = async (
             return new InternalServerErrorResponse('Server Tenant ID not found').generate()
         }
 
-        const products = await getProductByCategory(SERVER_TENANT_ID, category_id);
+        const category = await editCategoryById(SERVER_TENANT_ID, category_id, {
+            name,
+        })
 
         return {
-            data: {
-                products,
-            },
+            data: category,
             status: 200,
         }
     } catch (err: any) {
         return new InternalServerErrorResponse(err).generate()
     }
-};
+}

@@ -5,7 +5,7 @@ import express from "express";
 import cors from "cors";
 import express_prom_bundle from "express-prom-bundle";
 
-import productRoutes from './product/product.routes'
+import productRoutes from './shared/product/product.routes'
 
 const metricsMiddleware = express_prom_bundle({
   includeMethod: true,

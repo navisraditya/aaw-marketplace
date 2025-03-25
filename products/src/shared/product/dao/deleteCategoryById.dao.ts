@@ -1,6 +1,6 @@
-import { db } from "../../db";
+import { db } from "../../../db";
 import { eq, and } from "drizzle-orm";
-import * as schema from '../../../db/schema/categories';
+import * as schema from '../../../../db/schema/categories';
 
 export const deleteCategoryById = async (tenant_id: string, id: string) => {
     const result = await db

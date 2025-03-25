@@ -1,5 +1,5 @@
-import { NewCategory } from "../../../db/schema/categories";
-import { InternalServerErrorResponse } from "../.././commons/patterns";
+import { NewCategory } from "../../../../db/schema/categories";
+import { InternalServerErrorResponse } from "../../../commons/patterns";
 import { createNewCategory } from "../dao/createNewCategory.dao";
 
 export const createCategoryService = async (

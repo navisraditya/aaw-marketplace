@@ -1,7 +1,7 @@
 import { NewCart } from "../../../db/schema/cart";
 import { InternalServerErrorResponse, NotFoundResponse } from "../../commons/patterns";
 import { addItemToCart } from "../dao/addItemToCart.dao";
-import { User } from "../../../type/user";
+import { User } from "../../shared/type/user";
 
 export const addItemToCartService = async (
     user: User,

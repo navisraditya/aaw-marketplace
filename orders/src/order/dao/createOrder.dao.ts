@@ -6,7 +6,7 @@ import * as schemaOrder from "../../../db/schema/order";
 import * as schemaOrderDetail from "../../../db/schema/orderDetail";
 import { Cart } from "../../../db/schema/cart";
 import { and, eq } from "drizzle-orm";
-import { Product } from "../../../type/product";
+import { Product } from "../../shared/type/product";
 
 export const createOrder = async (
     tenant_id: string,

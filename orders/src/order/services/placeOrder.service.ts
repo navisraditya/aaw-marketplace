@@ -2,8 +2,8 @@ import { getAllCartItems } from "../../cart/dao/getAllCartItems.dao";
 import { BadRequestResponse, InternalServerErrorResponse, NotFoundResponse } from "../../commons/patterns";
 import { createOrder } from "../dao/createOrder.dao";
 import axios, { AxiosResponse } from "axios";
-import { User } from "../../../type/user";
-import { Product } from "../../../type/product";
+import { User } from  "../../shared/type/user";
+import { Product } from  "../../shared/type/product";
 
 export const placeOrderService = async (
     user: User,

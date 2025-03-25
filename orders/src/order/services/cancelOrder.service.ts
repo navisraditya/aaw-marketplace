@@ -1,7 +1,7 @@
 import { InternalServerErrorResponse, NotFoundResponse, UnauthorizedResponse } from "../../commons/patterns";
 import { getOrderById } from "../dao/getOrderById.dao";
 import { cancelOrder } from "../dao/cancelOrder.dao";
-import { User } from "../../../type/user"; 
+import { User } from  "../../shared/type/user"; 
 
 export const cancelOrderService = async (
     user: User,

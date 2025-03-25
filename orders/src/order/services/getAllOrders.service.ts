@@ -1,6 +1,6 @@
 import { InternalServerErrorResponse } from "../../commons/patterns";
 import { getAllOrders } from "../dao/getAllOrders.dao";
-import { User } from "@src/shared/types";
+import { User } from  "../../shared/type/user";
 
 export const getAllOrdersService = async (
     user: User
