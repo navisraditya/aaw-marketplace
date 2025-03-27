@@ -1,77 +1,91 @@
-import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { UnauthenticatedResponse } from "../commons/patterns/exceptions";
-import { verifyAdminTokenService } from "localhost:8000/src/user/services/verifyAdminTokenService";
-import { getTenantService } from "../../../tenant/src/tenant/services";
+import dotenv from "dotenv";
+dotenv.config();
 
-export const verifyJWTProduct = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+import express, { Express, Request, Response } from "express";
+import cors from "cors";
+import axios from "axios";
+import expressPromBundle from "express-prom-bundle";
+
+const app: Express = express();
+
+// Load API URLs from .env
+const AUTH_API_URL = process.env.AUTH_API_URL || "http://localhost:8000";
+const ORDERS_API_URL = process.env.ORDERS_API_URL || "http://localhost:8001";
+const CART_API_URL = process.env.CART_API_URL || "http://localhost:8001";
+const PRODUCTS_API_URL = process.env.PRODUCTS_API_URL || "http://localhost:8002";
+const TENANTS_API_URL = process.env.TENANTS_API_URL || "http://localhost:8003";
+const WISHLIST_API_URL = process.env.WISHLIST_API_URL || "http://localhost:8004";
+
+// Prometheus metrics middleware
+const metricsMiddleware = expressPromBundle({
+  includeMethod: true,
+  includePath: true,
+  includeStatusCode: true,
+  includeUp: true,
+  customLabels: { project_name: "marketplace-monolith" },
+  promClient: {
+    collectDefaultMetrics: {},
+  },
+});
+
+// Middleware
+app.use(metricsMiddleware);
+app.use(cors());
+app.use(express.json());
+
+// Proxy route handler function
+const proxyRequest = async (req: Request, res: Response, targetUrl: string) => {
   try {
-    const token = req.headers.authorization?.split("Bearer ")[1];
-    if (!token) {
-      return res.status(401).send({ message: "Invalid token" });
-    }
-
-    const payload = await verifyAdminTokenService(token);
-    if (payload.status !== 200) {
-      return res.status(401).send({ message: "Invalid token" });
-    }
-
-    const verifiedPayload = payload as {
-      status: 200;
-      data: {
-        user: {
-          id: string | null;
-          username: string;
-          email: string;
-          full_name: string | null;
-          address: string | null;
-          phone_number: string | null;
-        };
-      };
-    }
-
-    const SERVER_TENANT_ID = process.env.TENANT_ID;
-    if (!SERVER_TENANT_ID) {
-      return res.status(500).send({ message: "Server Tenant ID not found" });
-    }
-    const tenantPayload = await getTenantService(SERVER_TENANT_ID);
-
-    if (
-      tenantPayload.status !== 200 ||
-      !tenantPayload.data
-    ) {
-      return res.status(500).send({ message: "Server Tenant not found" });
-    }
-
-    const verifiedTenantPayload = tenantPayload as {
-      status: 200;
-      data: {
-        tenants: {
-          id: string;
-          owner_id: string;
-        };
-        tenantDetails: {
-          id: string;
-          tenant_id: string;
-          name: string;
-        };
-      };
-    };
-
-    // Check for tenant ownership
-    if (verifiedPayload.data.user.id !== verifiedTenantPayload.data.tenants.owner_id) {
-      return res.status(401).send({ message: "Invalid token" });
-    }
-
-    req.body.user = verifiedPayload.data.user;
-    next();
-  } catch (error) {
-    return res.status(401).json(
-      new UnauthenticatedResponse("Invalid token").generate()
-    );
+    const response = await axios({
+      method: req.method,
+      url: `${targetUrl}${req.originalUrl.replace("/api/auth", "/api/auth")}`, // Ensures proper URL forwarding
+      data: req.body,
+      headers: req.headers,
+    });
+    res.status(response.status).json(response.data);
+  } catch (error: any) {
+    console.error(`Error forwarding request to ${targetUrl}:`, error.message);
+    res.status(error.response?.status || 500).json({
+      message: "Service unavailable",
+      error: error.response?.data || error.message,
+    });
   }
 };
+
+// Proxy API routes to their respective microservices
+app.use("/api/auth", (req, res) => proxyRequest(req, res, AUTH_API_URL));
+app.use("/api/order", (req, res) => proxyRequest(req, res, ORDERS_API_URL));
+app.use("/api/cart", (req, res) => proxyRequest(req, res, CART_API_URL));
+app.use("/api/product", (req, res) => proxyRequest(req, res, PRODUCTS_API_URL));
+app.use("/api/tenant", (req, res) => proxyRequest(req, res, TENANTS_API_URL));
+app.use("/api/wishlist", (req, res) => proxyRequest(req, res, WISHLIST_API_URL));
+
+// Health check endpoint
+app.get("/health", (_, res) => {
+  res.status(200).json({ status: "healthy" });
+});
+
+// Root endpoint
+app.get("/", (_, res) => {
+  res.status(200).json({
+    message: "Marketplace API",
+    version: "1.0.0",
+  });
+});
+
+// 404 handler
+app.use((req: Request, res: Response) => {
+  res.status(404).json({
+    message: "Not Found",
+    path: req.path,
+  });
+});
+
+// Start server
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV}`);
+});
+
+export default app;

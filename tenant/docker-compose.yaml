@@ -5,11 +5,13 @@ services:
   microservice:
     build: .
     environment:
-      - AUTH_MS_URL=http://host.docker.internal:7999
+      - TENANT_ID=47dd6b24-0b23-46b0-a662-776158d089ba
+      - AUTH_MS_URL=http://host.docker.internal:8000
+      - TENANT_MS_URL=http://host.docker.internal:8003
       - DB_HOST=db
       - DB_PORT=5432
     ports:
-      - "8003:8003"
+      - "8002:8002"
     depends_on:
       - db
 
@@ -21,4 +23,4 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5431:5432"
+      - "5430:5432"

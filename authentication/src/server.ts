@@ -10,6 +10,7 @@ import expressPromBundle from "express-prom-bundle";
 const app: Express = express();
 
 // Load API URLs from .env
+const AUTH_API_URL = process.env.AUTH_API_URL || "http://localhost:8000";
 const ORDERS_API_URL = process.env.ORDERS_API_URL || "http://localhost:8001";
 const CART_API_URL = process.env.CART_API_URL || "http://localhost:8001";
 const PRODUCTS_API_URL = process.env.PRODUCTS_API_URL || "http://localhost:8002";
