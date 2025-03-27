@@ -3,7 +3,6 @@ dotenv.config();
 
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
-import authRoutes from "./user/user.routes";
 import axios from "axios";
 import expressPromBundle from "express-prom-bundle";
 
@@ -34,15 +33,12 @@ app.use(metricsMiddleware);
 app.use(cors());
 app.use(express.json());
 
-// Routes
-app.use("/api/auth", authRoutes);
-
-// Proxy route handlers for external services
+// Proxy route handler function
 const proxyRequest = async (req: Request, res: Response, targetUrl: string) => {
   try {
     const response = await axios({
       method: req.method,
-      url: `${targetUrl}${req.originalUrl.replace("/api", "")}`,
+      url: `${targetUrl}${req.originalUrl.replace("/api/auth", "/api/auth")}`, // Ensures proper URL forwarding
       data: req.body,
       headers: req.headers,
     });
@@ -56,7 +52,8 @@ const proxyRequest = async (req: Request, res: Response, targetUrl: string) => {
   }
 };
 
-// Proxy API routes to their respective services
+// Proxy API routes to their respective microservices
+app.use("/api/auth", (req, res) => proxyRequest(req, res, AUTH_API_URL));
 app.use("/api/order", (req, res) => proxyRequest(req, res, ORDERS_API_URL));
 app.use("/api/cart", (req, res) => proxyRequest(req, res, CART_API_URL));
 app.use("/api/product", (req, res) => proxyRequest(req, res, PRODUCTS_API_URL));
