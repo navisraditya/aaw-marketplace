@@ -1,91 +1,54 @@
-import dotenv from "dotenv";
-dotenv.config();
-
-import express, { Express, Request, Response } from "express";
-import cors from "cors";
+import { Request, Response, NextFunction } from "express";
 import axios from "axios";
-import expressPromBundle from "express-prom-bundle";
+import { UnauthenticatedResponse } from "../commons/patterns/exceptions";
 
-const app: Express = express();
-
-// Load API URLs from .env
-const AUTH_API_URL = process.env.AUTH_API_URL || "http://localhost:8000";
-const ORDERS_API_URL = process.env.ORDERS_API_URL || "http://localhost:8001";
-const CART_API_URL = process.env.CART_API_URL || "http://localhost:8001";
-const PRODUCTS_API_URL = process.env.PRODUCTS_API_URL || "http://localhost:8002";
-const TENANTS_API_URL = process.env.TENANTS_API_URL || "http://localhost:8003";
-const WISHLIST_API_URL = process.env.WISHLIST_API_URL || "http://localhost:8004";
-
-// Prometheus metrics middleware
-const metricsMiddleware = expressPromBundle({
-  includeMethod: true,
-  includePath: true,
-  includeStatusCode: true,
-  includeUp: true,
-  customLabels: { project_name: "marketplace-monolith" },
-  promClient: {
-    collectDefaultMetrics: {},
-  },
-});
-
-// Middleware
-app.use(metricsMiddleware);
-app.use(cors());
-app.use(express.json());
-
-// Proxy route handler function
-const proxyRequest = async (req: Request, res: Response, targetUrl: string) => {
+export const verifyJWTProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const response = await axios({
-      method: req.method,
-      url: `${targetUrl}${req.originalUrl.replace("/api/auth", "/api/auth")}`, // Ensures proper URL forwarding
-      data: req.body,
-      headers: req.headers,
-    });
-    res.status(response.status).json(response.data);
+    // Extract Bearer token
+    const token = req.headers.authorization?.split("Bearer ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "Missing or invalid token" });
+    }
+
+    // Verify token via AUTH service
+    const AUTH_API_URL = process.env.AUTH_API_URL || "http://localhost:8000";
+    const authResponse = await axios.post(`${AUTH_API_URL}/api/auth/verify-token`, { token });
+
+    if (authResponse.status !== 200 || !authResponse.data?.user) {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+
+    const user = authResponse.data.user;
+
+    // Fetch tenant info from TENANT service
+    const SERVER_TENANT_ID = process.env.TENANT_ID;
+    if (!SERVER_TENANT_ID) {
+      return res.status(500).json({ message: "Server Tenant ID not found" });
+    }
+
+    const TENANTS_API_URL = process.env.TENANTS_API_URL || "http://localhost:8003";
+    const tenantResponse = await axios.get(`${TENANTS_API_URL}/api/tenants/${SERVER_TENANT_ID}`);
+
+    if (tenantResponse.status !== 200 || !tenantResponse.data?.tenants) {
+      return res.status(500).json({ message: "Server Tenant not found" });
+    }
+
+    const tenantData = tenantResponse.data.tenants;
+
+    // Check if the user is the tenant owner
+    if (user.id !== tenantData.owner_id) {
+      return res.status(401).json({ message: "Unauthorized access" });
+    }
+
+    // Attach user data to request
+    req.body.user = user;
+    next();
   } catch (error: any) {
-    console.error(`Error forwarding request to ${targetUrl}:`, error.message);
-    res.status(error.response?.status || 500).json({
-      message: "Service unavailable",
-      error: error.response?.data || error.message,
-    });
+    console.error("JWT verification failed:", error.message);
+    return res.status(401).json(new UnauthenticatedResponse("Invalid token").generate());
   }
 };
-
-// Proxy API routes to their respective microservices
-app.use("/api/auth", (req, res) => proxyRequest(req, res, AUTH_API_URL));
-app.use("/api/order", (req, res) => proxyRequest(req, res, ORDERS_API_URL));
-app.use("/api/cart", (req, res) => proxyRequest(req, res, CART_API_URL));
-app.use("/api/product", (req, res) => proxyRequest(req, res, PRODUCTS_API_URL));
-app.use("/api/tenant", (req, res) => proxyRequest(req, res, TENANTS_API_URL));
-app.use("/api/wishlist", (req, res) => proxyRequest(req, res, WISHLIST_API_URL));
-
-// Health check endpoint
-app.get("/health", (_, res) => {
-  res.status(200).json({ status: "healthy" });
-});
-
-// Root endpoint
-app.get("/", (_, res) => {
-  res.status(200).json({
-    message: "Marketplace API",
-    version: "1.0.0",
-  });
-});
-
-// 404 handler
-app.use((req: Request, res: Response) => {
-  res.status(404).json({
-    message: "Not Found",
-    path: req.path,
-  });
-});
-
-// Start server
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
-});
-
-export default app;

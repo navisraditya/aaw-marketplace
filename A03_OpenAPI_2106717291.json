@@ -1,0 +1,192 @@
+openapi: 3.0.3
+info:
+  title: aaw-marketplace
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: localhost
+  - url: http://localhost
+paths:
+  /api/auth/register:
+    post:
+      summary: localhost:8000/api/auth/register
+      description: localhost:8000/api/auth/register
+      operationId: localhost8000ApiAuthRegister
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                  example: 123 Street, City
+                email:
+                  type: string
+                  example: test@example.com
+                full_name:
+                  type: string
+                  example: Test User
+                password:
+                  type: string
+                  example: pAssword123
+                phone_number:
+                  type: string
+                  example: '1234567890'
+                username:
+                  type: string
+                  example: testuser
+            examples:
+              localhost:8000/api/auth/register:
+                value:
+                  address: 123 Street, City
+                  email: test@example.com
+                  full_name: Test User
+                  password: pAssword123
+                  phone_number: '1234567890'
+                  username: testuser
+      responses:
+        '200':
+          description: ''
+  /api/auth/login:
+    post:
+      summary: localhost:8000/api/auth/login
+      description: localhost:8000/api/auth/login
+      operationId: localhost8000ApiAuthLogin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: pAssword123
+                username:
+                  type: string
+                  example: testuser
+            examples:
+              localhost:8000/api/auth/login:
+                value:
+                  password: pAssword123
+                  username: testuser
+      responses:
+        '200':
+          description: ''
+  /api/auth/verify-token:
+    post:
+      summary: localhost:8000/api/auth/verify-token
+      description: localhost:8000/api/auth/verify-token
+      operationId: localhost8000ApiAuthVerifyToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: >-
+                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY5MTA2ZDAyLTAxY2YtNGNmYy1hYzc4LTY0MTcxZWU3MTNjOSIsInRlbmFudF9pZCI6IjQ3ZGQ2YjI0LTBiMjMtNDZiMC1hNjYyLTc3NjE1OGQwODliYSIsImlhdCI6MTc0MzE0OTcwOCwiZXhwIjoxNzQzMjM2MTA4fQ.U7MdZqD0t086kQ2hWY8cZr4yCklHMIKK_RPTRgpmaPQ
+            examples:
+              localhost:8000/api/auth/verify-token:
+                value:
+                  token: >-
+                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY5MTA2ZDAyLTAxY2YtNGNmYy1hYzc4LTY0MTcxZWU3MTNjOSIsInRlbmFudF9pZCI6IjQ3ZGQ2YjI0LTBiMjMtNDZiMC1hNjYyLTc3NjE1OGQwODliYSIsImlhdCI6MTc0MzE0OTcwOCwiZXhwIjoxNzQzMjM2MTA4fQ.U7MdZqD0t086kQ2hWY8cZr4yCklHMIKK_RPTRgpmaPQ
+      responses:
+        '200':
+          description: ''
+  /api/products/category:
+    get:
+      summary: localhost:8002/api/products/category
+      description: localhost:8002/api/products/category
+      operationId: localhost8002ApiProductsCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: elektronik
+            examples:
+              localhost:8002/api/products/category:
+                value:
+                  name: elektronik
+      responses:
+        '200':
+          description: ''
+    post:
+      summary: http://localhost:8002/api/products/category
+      description: http://localhost:8002/api/products/category
+      operationId: httpLocalhost8002ApiProductsCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Electronics
+            examples:
+              http://localhost:8002/api/products/category:
+                value:
+                  name: Electronics
+      responses:
+        '200':
+          description: ''
+  /api/products:
+    get:
+      summary: localhost:8002/api/products
+      description: localhost:8002/api/products
+      operationId: localhost8002ApiProducts
+      responses:
+        '200':
+          description: ''
+    post:
+      summary: http://localhost:8002/api/products
+      description: http://localhost:8002/api/products
+      operationId: httpLocalhost8002ApiProducts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category_id:
+                  type: string
+                  example: 123e4567-e89b-12d3-a456-426614174000
+                description:
+                  type: string
+                  example: A high-end smartphone with a powerful camera.
+                name:
+                  type: string
+                  example: Smartphone XYZ
+                price:
+                  type: number
+                  example: 999.99
+                quantity_available:
+                  type: number
+                  example: 50
+            examples:
+              http://localhost:8002/api/products:
+                value:
+                  category_id: 123e4567-e89b-12d3-a456-426614174000
+                  description: A high-end smartphone with a powerful camera.
+                  name: Smartphone XYZ
+                  price: 999.99
+                  quantity_available: 50
+      responses:
+        '200':
+          description: ''
+  /health:
+    get:
+      summary: http://localhost:8000/health
+      description: http://localhost:8000/health
+      operationId: httpLocalhost8000Health
+      responses:
+        '200':
+          description: ''
+tags: []
