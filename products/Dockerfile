@@ -44,4 +44,4 @@ RUN npm install --only=production
 EXPOSE 8002
 
 # Start the application
-CMD ["bash", "-c", "tsx dist/src/db/migrate.js" && "dist/src/server.js"]
+CMD ["bash", "-c", "tsx dist/src/db/migrate.js && exec node dist/src/server.js"]
