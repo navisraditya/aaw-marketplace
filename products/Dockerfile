@@ -17,6 +17,8 @@ RUN pnpm install
 COPY . .
 
 # Building our application
+RUN pnpm config set enable-scripts true
+RUN pnpm run generate
 RUN pnpm run build
 
 # Stage 2: Creating a lightweight image for production
@@ -30,8 +32,10 @@ ENV NODE_ENV production
 WORKDIR /service-products
 
 # Copy built files from the previous stage
+RUN npm install -g tsx
 COPY --from=builder /service-products/dist ./dist
 COPY --from=builder /service-products/package.json ./package.json
+COPY --from=builder /service-products/drizzle ./drizzle
 
 # Install production dependencies only
 RUN npm install --only=production
@@ -40,4 +44,4 @@ RUN npm install --only=production
 EXPOSE 8002
 
 # Start the application
-CMD ["node", "dist/src/server.js"]
+CMD ["bash", "-c", "tsx dist/src/db/migrate.js" && "dist/src/server.js"]

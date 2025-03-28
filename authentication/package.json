@@ -22,6 +22,7 @@
     "express-prom-bundle": "^7.0.0",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.3",
+    "pnpm": "^10.7.0",
     "prom-client": "^15.1.2",
     "zod": "^3.22.4"
   },
@@ -33,7 +34,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^20.11.24",
     "@types/pg": "^8.11.2",
-    "drizzle-kit": "^0.19.1",
+    "drizzle-kit": "^0.30.6",
     "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.8",
