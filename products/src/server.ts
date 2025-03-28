@@ -3,18 +3,20 @@ dotenv.config();
 
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
-import axios from "axios";
+import { Pool } from "pg";
 import expressPromBundle from "express-prom-bundle";
+import productRoutes from '../src/shared/product/product.routes';
 
 const app: Express = express();
 
-// Load API URLs from .env
-const AUTH_API_URL = process.env.AUTH_API_URL || "http://localhost:8000";
-const ORDERS_API_URL = process.env.ORDERS_API_URL || "http://localhost:8001";
-const CART_API_URL = process.env.CART_API_URL || "http://localhost:8001";
-const PRODUCTS_API_URL = process.env.PRODUCTS_API_URL || "http://localhost:8002";
-const TENANTS_API_URL = process.env.TENANTS_API_URL || "http://localhost:8003";
-const WISHLIST_API_URL = process.env.WISHLIST_API_URL || "http://localhost:8004";
+// Database Connection
+const pool = new Pool({
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+});
 
 // Prometheus metrics middleware
 const metricsMiddleware = expressPromBundle({
@@ -22,7 +24,7 @@ const metricsMiddleware = expressPromBundle({
   includePath: true,
   includeStatusCode: true,
   includeUp: true,
-  customLabels: { project_name: "marketplace-monolith" },
+  customLabels: { project_name: "products-service" },
   promClient: {
     collectDefaultMetrics: {},
   },
@@ -33,43 +35,16 @@ app.use(metricsMiddleware);
 app.use(cors());
 app.use(express.json());
 
-// Proxy route handler function
-const proxyRequest = async (req: Request, res: Response, targetUrl: string) => {
-  try {
-    const response = await axios({
-      method: req.method,
-      url: `${targetUrl}${req.originalUrl.replace("/api/auth", "/api/auth")}`, // Ensures proper URL forwarding
-      data: req.body,
-      headers: req.headers,
-    });
-    res.status(response.status).json(response.data);
-  } catch (error: any) {
-    console.error(`Error forwarding request to ${targetUrl}:`, error.message);
-    res.status(error.response?.status || 500).json({
-      message: "Service unavailable",
-      error: error.response?.data || error.message,
-    });
-  }
-};
+// Products endpoints
+app.use('/api/products', productRoutes);
 
-// Proxy API routes to their respective microservices
-app.use("/api/auth", (req, res) => proxyRequest(req, res, AUTH_API_URL));
-app.use("/api/order", (req, res) => proxyRequest(req, res, ORDERS_API_URL));
-app.use("/api/cart", (req, res) => proxyRequest(req, res, CART_API_URL));
-app.use("/api/product", (req, res) => proxyRequest(req, res, PRODUCTS_API_URL));
-app.use("/api/tenant", (req, res) => proxyRequest(req, res, TENANTS_API_URL));
-app.use("/api/wishlist", (req, res) => proxyRequest(req, res, WISHLIST_API_URL));
 
 // Health check endpoint
 app.get("/health", (_, res) => {
-  res.status(200).json({ status: "healthy" });
-});
-
-// Root endpoint
-app.get("/", (_, res) => {
-  res.status(200).json({
-    message: "Marketplace API",
-    version: "1.0.0",
+  res.status(200).json({ 
+    status: "healthy",
+    service: "products-service",
+    dbStatus: pool ? "connected" : "disconnected"
   });
 });
 
@@ -82,10 +57,9 @@ app.use((req: Request, res: Response) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
+const PORT = Number(process.env.PORT) || 8002;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Products service running on port ${PORT}`);
 });
 
 export default app;

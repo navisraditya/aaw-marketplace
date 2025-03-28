@@ -2,7 +2,7 @@
 
 services:
   # Node.js application service
-  microservice:
+  wishlist-service:
     build: .
     environment:
       - TENANT_ID=47dd6b24-0b23-46b0-a662-776158d089ba
@@ -15,13 +15,14 @@ services:
       - db
 
   # PostgreSQL database service
-  db:
+  db-wishlist:
     image: postgres:latest
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5429:5432"
-  # rootDir:
-  #   /root/d/s/e/h/a/f/k/u/c/i/m
+      - "5429:5432"   
+    volumes:
+      - ./wishlist/db/schema:/docker-entrypoint-initdb.d  
+      - /var/lib/postgresql/data

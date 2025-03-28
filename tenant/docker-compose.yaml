@@ -2,7 +2,7 @@
 
 services:
   # Node.js application service
-  microservice:
+  tenant-service:
     build: .
     environment:
       - TENANT_ID=47dd6b24-0b23-46b0-a662-776158d089ba
@@ -16,11 +16,14 @@ services:
       - db
 
   # PostgreSQL database service
-  db:
+  db-tenant:
     image: postgres:latest
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5431:5432"
+      - "5431:5432"    
+    volumes:
+      - ./tenant/db/schema:/docker-entrypoint-initdb.d  
+      - /var/lib/postgresql/data

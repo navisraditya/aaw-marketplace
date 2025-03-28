@@ -19,6 +19,6 @@
     "typeRoots": ["./node_modules/@types"],
     "types": ["node"]
   },
-  "include": ["src"],  /* Ensures only 'src/' is compiled */
+  "include": ["src", "products/db"],  /* Ensures only 'src/' is compiled */
   "exclude": ["drizzle.config.ts", "node_modules", "dist"]  /* Excludes unwanted files */
 }
