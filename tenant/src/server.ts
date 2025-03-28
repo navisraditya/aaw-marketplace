@@ -1,31 +1,65 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import express from "express";
+import express, { Express, Request, Response } from "express";
 import cors from "cors";
-import express_prom_bundle from "express-prom-bundle";
+import { Pool } from "pg";
+import expressPromBundle from "express-prom-bundle";
+import tenanttRoutes from '../src/tenant/tenant.routes';
 
-import tenantRoutes from './tenant/tenant.routes';
+const app: Express = express();
 
-const metricsMiddleware = express_prom_bundle({
+// Database Connection
+const pool = new Pool({
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+});
+
+// Prometheus metrics middleware
+const metricsMiddleware = expressPromBundle({
   includeMethod: true,
   includePath: true,
   includeStatusCode: true,
-  includeUp: true
-})
+  includeUp: true,
+  customLabels: { project_name: "products-service" },
+  promClient: {
+    collectDefaultMetrics: {},
+  },
+});
 
-const app = express();
+// Middleware
 app.use(metricsMiddleware);
 app.use(cors());
 app.use(express.json());
 
-app.use("/tenant", tenantRoutes);
+// Products endpoints
+app.use('/api/tenant', tenanttRoutes);
 
-app.get("/", (req, res) => {
-  return res.status(200).send("Tenant Microservice is running!");
+
+// Health check endpoint
+app.get("/health", (_, res) => {
+  res.status(200).json({ 
+    status: "healthy",
+    service: "tenant-service",
+    dbStatus: pool ? "connected" : "disconnected"
+  });
 });
 
-const PORT = process.env.PORT || 8003;
-app.listen(PORT, () => {
-  console.log(`🚀 Tenant Microservice has started on port ${PORT}`);
+// 404 handler
+app.use((req: Request, res: Response) => {
+  res.status(404).json({
+    message: "Not Found",
+    path: req.path,
+  });
 });
+
+// Start server
+const PORT = Number(process.env.PORT) || 8002;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Products service running on port ${PORT}`);
+});
+
+export default app;

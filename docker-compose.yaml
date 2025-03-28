@@ -1,0 +1,150 @@
+# version: '3.8'
+
+services:
+  # Auth Service
+  auth-service:
+    build: ./authentication
+    ports:
+      - "8000:8000"
+    environment: 
+      - TENANT_ID=47dd6b24-0b23-46b0-a662-776158d089ba
+      - JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY5MTA2ZDAyLTAxY2YtNGNmYy1hYzc4LTY0MTcxZWU3MTNjOSIsInRlbmFudF9pZCI6IjQ3ZGQ2YjI0LTBiMjMtNDZiMC1hNjYyLTc3NjE1OGQwODliYSIsImlhdCI6MTc0MzE0OTcwOCwiZXhwIjoxNzQzMjM2MTA4fQ.U7MdZqD0t086kQ2hWY8cZr4yCklHMIKK_RPTRgpmaPQ
+      - DB_HOST=db-auth
+      - DB_PORT=5432
+      - DB_USER=postgres  
+      - DB_PASSWORD=postgres  
+      - DB_NAME=marketplace
+    depends_on:
+      - db-auth
+
+  # Orders Service
+  orders-service:
+    build: ./orders
+    ports:
+      - "8001:8001"
+    environment: 
+      - TENANT_ID=47dd6b24-0b23-46b0-a662-776158d089ba
+      - JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY5MTA2ZDAyLTAxY2YtNGNmYy1hYzc4LTY0MTcxZWU3MTNjOSIsInRlbmFudF9pZCI6IjQ3ZGQ2YjI0LTBiMjMtNDZiMC1hNjYyLTc3NjE1OGQwODliYSIsImlhdCI6MTc0MzE0OTcwOCwiZXhwIjoxNzQzMjM2MTA4fQ.U7MdZqD0t086kQ2hWY8cZr4yCklHMIKK_RPTRgpmaPQ
+      - DB_HOST=db-orders
+      - DB_PORT=5432
+      - DB_USER=postgres  
+      - DB_PASSWORD=postgres  
+      - DB_NAME=marketplace
+    depends_on:
+      - db-orders
+
+  # Products Service
+  products-service:
+    build: ./products
+    ports:
+      - "8002:8002"
+    environment: 
+      - TENANT_ID=47dd6b24-0b23-46b0-a662-776158d089ba
+      - JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY5MTA2ZDAyLTAxY2YtNGNmYy1hYzc4LTY0MTcxZWU3MTNjOSIsInRlbmFudF9pZCI6IjQ3ZGQ2YjI0LTBiMjMtNDZiMC1hNjYyLTc3NjE1OGQwODliYSIsImlhdCI6MTc0MzE0OTcwOCwiZXhwIjoxNzQzMjM2MTA4fQ.U7MdZqD0t086kQ2hWY8cZr4yCklHMIKK_RPTRgpmaPQ
+      - DB_HOST=db-products
+      - DB_PORT=5432
+      - DB_USER=postgres  
+      - DB_PASSWORD=postgres  
+      - DB_NAME=marketplace  
+    depends_on:
+      - db-products
+
+  # Tenants Service
+  tenants-service:
+    build: ./tenant
+    ports:
+      - "8003:8003"
+    environment: 
+      - TENANT_ID=47dd6b24-0b23-46b0-a662-776158d089ba
+      - JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY5MTA2ZDAyLTAxY2YtNGNmYy1hYzc4LTY0MTcxZWU3MTNjOSIsInRlbmFudF9pZCI6IjQ3ZGQ2YjI0LTBiMjMtNDZiMC1hNjYyLTc3NjE1OGQwODliYSIsImlhdCI6MTc0MzE0OTcwOCwiZXhwIjoxNzQzMjM2MTA4fQ.U7MdZqD0t086kQ2hWY8cZr4yCklHMIKK_RPTRgpmaPQ
+      - DB_HOST=db-tenants
+      - DB_PORT=5432
+      - DB_USER=postgres  
+      - DB_PASSWORD=postgres  
+      - DB_NAME=marketplace
+    depends_on:
+      - db-tenants
+
+  # Wishlist Service
+  wishlist-service:
+    build: ./wishlist
+    ports:
+      - "8004:8004"
+    environment: 
+      - TENANT_ID=47dd6b24-0b23-46b0-a662-776158d089ba
+      - JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY5MTA2ZDAyLTAxY2YtNGNmYy1hYzc4LTY0MTcxZWU3MTNjOSIsInRlbmFudF9pZCI6IjQ3ZGQ2YjI0LTBiMjMtNDZiMC1hNjYyLTc3NjE1OGQwODliYSIsImlhdCI6MTc0MzE0OTcwOCwiZXhwIjoxNzQzMjM2MTA4fQ.U7MdZqD0t086kQ2hWY8cZr4yCklHMIKK_RPTRgpmaPQ
+      - DB_HOST=db-wishlist
+      - DB_PORT=5432
+      - DB_USER=postgres  
+      - DB_PASSWORD=postgres  
+      - DB_NAME=marketplace
+    depends_on:
+      - db-wishlist
+
+  # Databases
+  db-auth:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: marketplace
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - auth_db_data:/var/lib/postgresql/data
+      - ./authentication/db/schema:/docker-entrypoint-initdb.d
+
+  db-orders:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: marketplace
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - orders_db_data:/var/lib/postgresql/data
+      - ./orders/db/schema:/docker-entrypoint-initdb.d
+
+  db-products:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: marketplace
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - products_db_data:/var/lib/postgresql/data
+      - ./products/db/schema:/docker-entrypoint-initdb.d
+
+  db-tenants:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: marketplace
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+    volumes:
+      - tenants_db_data:/var/lib/postgresql/data
+      - ./tenant/db/schema:/docker-entrypoint-initdb.d
+
+  db-wishlist:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: marketplace
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5436:5432"
+    volumes:
+      - wishlist_db_data:/var/lib/postgresql/data
+      - ./wishlist/db/schema:/docker-entrypoint-initdb.d
+
+volumes:
+  auth_db_data:
+  orders_db_data:
+  products_db_data:
+  tenants_db_data:
+  wishlist_db_data:

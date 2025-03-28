@@ -1,6 +1,6 @@
 import { InternalServerErrorResponse } from "../../../src/commons/patterns";
 import { createWishlist } from "../dao/createWishlist.dao";
-import { User } from "../../../type/user";
+import { User } from "../../shared/type/user";
 import { NewWishlist } from "@db/schema/wishlist";
 
 export const createWishlistService = async (

@@ -1,13 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import axios from "axios";
 import { UnauthenticatedResponse } from "../commons/patterns/exceptions";
-import { verifyAdminTokenService } from "../../../authentication/src/user/services/verifyAdminToken.service";
-import { getTenantService } from "../../../tenant/src/tenant/services/getTenant.service";
-
-interface JWTUser extends JwtPayload {
-  id: string;
-  tenant_id: string;
-}
 
 export const verifyJWTTenant = async (
   req: Request,
@@ -15,35 +8,25 @@ export const verifyJWTTenant = async (
   next: NextFunction
 ) => {
   try {
+    // Extract Bearer token
     const token = req.headers.authorization?.split("Bearer ")[1];
     if (!token) {
-      return res.status(401).send({ message: "Invalid token" });
+      return res.status(401).json({ message: "Missing or invalid token" });
     }
 
-    const payload = await verifyAdminTokenService(token);
-    if (payload.status !== 200) {
-      return res.status(401).send({ message: "Invalid token" });
+    // Verify token via AUTH service
+    const AUTH_API_URL = process.env.AUTH_API_URL || "http://localhost:8000";
+    const authResponse = await axios.post(`${AUTH_API_URL}/api/auth/verify-token`, { token });
+
+    if (authResponse.status !== 200 || !authResponse.data?.user) {
+      return res.status(401).json({ message: "Invalid token" });
     }
 
-    const verifiedPayload = payload as {
-      status: 200;
-      data: {
-        user: {
-          id: string | null;
-          username: string;
-          email: string;
-          full_name: string | null;
-          address: string | null;
-          phone_number: string | null;
-        };
-      };
-    }
-
-    req.body.user = verifiedPayload.data.user;
+    // Attach user data to request
+    req.body.user = authResponse.data.user;
     next();
-  } catch (error) {
-    return res.status(401).json(
-      new UnauthenticatedResponse("Invalid token").generate()
-    );
+  } catch (error: any) {
+    console.error("JWT verification failed:", error.message);
+    return res.status(401).json(new UnauthenticatedResponse("Invalid token").generate());
   }
 };
