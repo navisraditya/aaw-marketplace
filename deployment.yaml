@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  labels:
+    app: auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: navisraditya/auth-service:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: TENANT_ID
+              value: "47dd6b24-0b23-46b0-a662-776158d089ba"
+            - name: JWT_SECRET
+              value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY5MTA2ZDAyLTAxY2YtNGNmYy1hYzc4LTY0MTcxZWU3MTNjOSIsInRlbmFudF9pZCI6IjQ3ZGQ2YjI0LTBiMjMtNDZiMC1hNjYyLTc3NjE1OGQwODliYSIsImlhdCI6MTc0MzE0OTcwOCwiZXhwIjoxNzQzMjM2MTA4fQ.U7MdZqD0t086kQ2hWY8cZr4yCklHMIKK_RPTRgpmaPQ
+            - name: DATABASE_URL
+              value: "postgres://postgres:postgres@db-auth:5432/marketplace"
